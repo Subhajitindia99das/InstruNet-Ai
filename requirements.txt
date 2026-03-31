@@ -7,4 +7,4 @@ fpdf==1.7.2
 soundfile==0.12.1
 scipy==1.11.4
 numba==0.58.1
-setuptools
+setuptools<82.0.0
