@@ -1,0 +1,9 @@
+streamlit==1.33.0
+tensorflow-cpu~=2.15.0
+numpy==1.26.4
+librosa==0.10.1
+matplotlib==3.8.2
+fpdf==1.7.2
+soundfile==0.12.1
+scipy==1.11.4
+numba==0.58.1
