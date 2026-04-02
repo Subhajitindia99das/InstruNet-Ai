@@ -786,7 +786,7 @@ if 'result' in st.session_state:
     </div>""", unsafe_allow_html=True)
 
     # Spectrogram
-    spec_slot.image(spec_buf.getvalue(), use_container_width=True)
+    spec_slot.image(spec_buf.getvalue(), use_column_width=True)
 
     # Results
     with res_slot.container():
