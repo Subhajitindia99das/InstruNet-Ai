@@ -1,4 +1,5 @@
 import streamlit as st
+import auth
 import tensorflow as tf
 import numpy as np
 import librosa
@@ -20,6 +21,24 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# ─── AUTHENTICATION ROUTER ───────────────────────────────────────────────────
+# 2. NEW: Check if the user is logged in
+if 'logged_in' not in st.session_state:
+    st.session_state['logged_in'] = False
+
+if not st.session_state['logged_in']:
+    auth.show_auth_page()
+    st.stop()  # <--- This completely hides and protects the ML code below!
+
+# 3. NEW: Logout Button in Sidebar
+with st.sidebar:
+    st.markdown(f"👤 **Logged in as:** `{st.session_state.get('username', 'User')}`")
+    if st.button("Logout", use_container_width=True):
+        st.session_state['logged_in'] = False
+        st.rerun()
+    st.markdown("---")
+
 
 # ─── GLOBAL CSS ──────────────────────────────────────────────────────────────
 st.markdown("""
@@ -767,7 +786,7 @@ if 'result' in st.session_state:
     </div>""", unsafe_allow_html=True)
 
     # Spectrogram
-    spec_slot.image(spec_buf.getvalue(), use_column_width=True)
+    spec_slot.image(spec_buf, use_container_width=True)
 
     # Results
     with res_slot.container():
