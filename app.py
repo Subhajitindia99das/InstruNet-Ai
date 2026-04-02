@@ -342,13 +342,27 @@ except Exception as e:
 
 
 # ─── AUDIO HELPERS ───────────────────────────────────────────────────────────
+# def load_audio(file_path):
+#     y, sr    = librosa.load(file_path, sr=16000)
+#     duration = len(y) / sr
+#     y, _     = librosa.effects.trim(y)
+#     rms      = np.sqrt(np.mean(y**2))
+#     if rms > 0:
+#         y = y * (0.1 / rms)
+#     return y, sr, duration
 def load_audio(file_path):
-    y, sr    = librosa.load(file_path, sr=16000)
+    # 1. Force deterministic resampling and strict 32-bit float math
+    y, sr = librosa.load(file_path, sr=16000, res_type='soxr_hq', dtype=np.float32)
     duration = len(y) / sr
-    y, _     = librosa.effects.trim(y)
-    rms      = np.sqrt(np.mean(y**2))
+    
+    # 2. Aggressive trimming: ignores microscopic OS decoding noise (top_db=45)
+    y, _ = librosa.effects.trim(y, top_db=45)
+    
+    # 3. RMS normalization
+    rms = np.sqrt(np.mean(y**2))
     if rms > 0:
         y = y * (0.1 / rms)
+        
     return y, sr, duration
 
 
@@ -786,7 +800,7 @@ if 'result' in st.session_state:
     </div>""", unsafe_allow_html=True)
 
     # Spectrogram
-    spec_slot.image(spec_buf.getvalue(), use_column_width=True)
+    spec_slot.image(spec_buf.getvalue(), use_container_width=True)
 
     # Results
     with res_slot.container():
